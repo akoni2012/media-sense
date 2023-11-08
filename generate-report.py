@@ -94,8 +94,9 @@ def generate_ratings():
 # 6. Test the application
 def main():
 
-    # rating = generate_ratings()
-    rating_to_string = str({'viewability': 2, 'brand_safety_risk': 31, 'invalid_traffic': 51, 'out_of_geo': 34})
+    rating = generate_ratings()
+    # rating_to_string = str({'viewability': 2, 'brand_safety_risk': 31, 'invalid_traffic': 51, 'out_of_geo': 34})
+    rating_to_string = str(rating)
     result = generate_response(rating_to_string)
     print("inside main")
     print(rating_to_string)
