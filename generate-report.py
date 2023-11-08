@@ -1,4 +1,3 @@
-import streamlit as st
 import pandas as pd
 from langchain.document_loaders.csv_loader import CSVLoader
 from langchain.vectorstores import FAISS
@@ -17,15 +16,12 @@ documents = loader.load()
 embeddings = OpenAIEmbeddings()
 db = FAISS.from_documents(documents, embeddings)
 
+
 # 2. Function for similarity search
-
-
 def retrieve_info(query):
     similar_response = db.similarity_search(query, k=3)
 
     page_contents_array = [doc.page_content for doc in similar_response]
-
-    # print(page_contents_array)
 
     return page_contents_array
 
@@ -69,25 +65,27 @@ def generate_response(rating):
 
 
 # 5. Generate the ratings based on simple heuristics (normalization of feature metrics)
+# Standardize the values (based on their individual benchmarks) of the features in order to make them relatable
+# achieved by subtracting the benchmark from the grand total of each dimension (e.g. viewability dimension) and 
+# then dividing the result by the benchmark. Multiply by -100 or +100 in order to standardise to whole +ive numbers
+# which are meaningful as ratings. Returns a list of ratings for all dimensions.
 
 def generate_ratings():
-    print("inside generate_ratings 1")
+    # read the contents of the performance metrics into a Pandas data frame
     df = pd.read_csv('ad-verification-performance-data-italy.csv')
     features = ['Viewability', 'Brand Safety Risk', 'IVT', 'Out-of-Geo']
 
+    # convert percentages (str) into numbers/decimals for processing
     for i in features:
         replace_with_floats = df[i].str.rstrip("%").astype(float)/100
         df[i] = replace_with_floats
 
-    print("inside generate_ratings 2")
     viewability = 100*(df.loc[5]['Viewability'] - df.loc[6]['Viewability'])/df.loc[6]['Viewability']
     brand_safety_risk = -100*(df.loc[5]['Brand Safety Risk'] - df.loc[6]['Brand Safety Risk'])/df.loc[6]['Brand Safety Risk']
     invalid_traffic = -100*(df.loc[5]['IVT'] - df.loc[6]['IVT'])/df.loc[6]['IVT']
     out_of_geo = -100*(df.loc[5]['Out-of-Geo'] - df.loc[6]['Out-of-Geo'])/df.loc[6]['Out-of-Geo']
 
     rating = {'viewability': round(viewability), 'brand_safety_risk': round(brand_safety_risk), 'invalid_traffic': round(invalid_traffic), 'out_of_geo': round(out_of_geo)}
-    print("inside generate_ratings 3")
-    print(str(rating))
     return rating
 
 
@@ -98,7 +96,6 @@ def main():
     # rating_to_string = str({'viewability': 2, 'brand_safety_risk': 31, 'invalid_traffic': 51, 'out_of_geo': 34})
     rating_to_string = str(rating)
     result = generate_response(rating_to_string)
-    print("inside main")
     print(rating_to_string)
     print(result)
 
