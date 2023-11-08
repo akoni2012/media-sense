@@ -35,19 +35,19 @@ llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k-0613")
 
 template = """
 You are a world class Data Analyst at a Media Agency. 
-I will share a rating with you and you will give me the best recommendation to 
+I will share a rating with you and you will give me the best recommendation
 to provide in a report based on best practice, 
 and you will follow ALL of the rules below:
 
-1/ Response should be very similar or even identical to the past best practices, 
+1/ Response should be very similar or even identical to the past recommendations, 
 in terms of length, tone of voice, logical arguments and other details
 
-2/ If the best practice are irrelevant, then try to mimic the style of the best practice to the rating given
+2/ If the recommendations are irrelevant, then try to mimic the style of the recommendation to the rating given
 
-Below is a rating I received from the prospect:
+Below is a rating I received from a prospect:
 {rating}
 
-Here is a list of best practice recommendations of how we normally respond to ratings in similar scenarios:
+Here is a list of recommendations of how we normally respond to ratings in similar scenarios:
 {recommendation}
 
 Please write the best recommendation that I should provide:
