@@ -18,6 +18,7 @@ db = FAISS.from_documents(documents, embeddings)
 
 
 # 2. Function for similarity search
+# Identify the top k most relevant documents (recommendations) based on the query (rating) entered
 def retrieve_info(query):
     similar_response = db.similarity_search(query, k=3)
 
@@ -65,11 +66,6 @@ def generate_response(rating):
 
 
 # 5. Generate the ratings based on simple heuristics (normalization of feature metrics)
-# Standardize the values (based on their individual benchmarks) of the features in order to make them relatable
-# achieved by subtracting the benchmark from the grand total of each dimension (e.g. viewability dimension) and 
-# then dividing the result by the benchmark. Multiply by -100 or +100 in order to standardise to whole +ive numbers
-# which are meaningful as ratings. Returns a list of ratings for all dimensions.
-
 def generate_ratings():
     # read the contents of the performance metrics into a Pandas data frame
     df = pd.read_csv('ad-verification-performance-data-italy.csv')
@@ -80,6 +76,10 @@ def generate_ratings():
         replace_with_floats = df[i].str.rstrip("%").astype(float)/100
         df[i] = replace_with_floats
 
+    # Standardize the values (based on their individual benchmarks) of the features in order to make them relatable.
+    # Achieved by subtracting the benchmark from the grand total of each dimension (e.g. viewability dimension) and 
+    # then dividing the result by the benchmark. Multiply by -100 or +100 in order to standardise to whole +ive numbers
+    # which are meaningful as ratings. Returns a list of ratings for all dimensions.
     viewability = 100*(df.loc[5]['Viewability'] - df.loc[6]['Viewability'])/df.loc[6]['Viewability']
     brand_safety_risk = -100*(df.loc[5]['Brand Safety Risk'] - df.loc[6]['Brand Safety Risk'])/df.loc[6]['Brand Safety Risk']
     invalid_traffic = -100*(df.loc[5]['IVT'] - df.loc[6]['IVT'])/df.loc[6]['IVT']
