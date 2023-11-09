@@ -4,7 +4,7 @@ import pandas as pd
 # achieved by subtracting the benchmark from the grand total of each dimension (e.g. viewability dimension) and 
 # then dividing the result by the benchmark. Multiply by -100 or +100 in order to standardise to whole +ive numbers
 # which are meaningful as ratings. Returns a list of ratings for all dimensions.
-# Rating - Media-sense universal measure of how good or bad a campaign fared.
+# Rating - Media-sense universal measure of how good or bad a campaign fared. (Based only on Ad-verification)
 def generate_ratings(path_to_file):
 
     # read the contents of the performance metrics into a Pandas data frame
