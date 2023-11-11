@@ -18,7 +18,7 @@ embeddings = OpenAIEmbeddings()
 db = FAISS.from_documents(documents, embeddings)
 
 # 2. Function for similarity search
-# identify the top k most relevant documents based on the query (rating, in our case) entered
+# identify the top k most relevant documents (recommendations) based on the query (ratings entered) entered
 def retrieve_info(query):
     similar_response = db.similarity_search(query, k=3)
 
